@@ -1,25 +1,53 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Card from "./Card";
+import Pagination from "./Pagination";
+import axios from "axios";
 function ListCards() {
-  const [pokemonName, setPokemonName] = useState([]);
+  const [pokemon, setPokemon] = useState([]);
+  const [currentPage, setCurrentPage] = useState(
+    "https://pokeapi.co/api/v2/pokemon?limit=20"
+  );
+  const [nextPage, setNextPage] = useState([]);
+  const [prevPage, setPrevPage] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  //pokemon nome
   useEffect(() => {
-    const getPokemonName = async () => {
-      const response = await axios.get(
-        "https://pokeapi.co/api/v2/pokemon?limit=20"
-      );
-      setPokemonName(response.data.results);
-    };
     getPokemonName();
-  }, []);
+  }, [currentPage]);
 
+  const getPokemonName = () => {
+    setLoading(true);
+    let cancel;
+    axios
+      .get(currentPage, {
+        cancelToken: new axios.CancelToken((c) => (cancel = c)),
+      })
+      .then((Response) => {
+        setLoading(false);
+        setPokemon(Response.data.results);
+        setNextPage(Response.data.next);
+        setPrevPage(Response.data.previous);
+      });
+    return () => cancel();
+  };
+
+  function gotoNextPage() {
+    setCurrentPage(nextPage);
+  }
+
+  function gotoPrevPage() {
+    setCurrentPage(prevPage);
+  }
+  if (loading) return "loading...";
   return (
     <div className="ListCards">
-      {pokemonName.map((item, index) => {
-        return <Card key={index} name={item.name} url={item.url}></Card>;
-      })}
+      {pokemon.map((item, index) => (
+        <Card name={item.name} url={item.url} key={index}></Card>
+      ))}
+      <Pagination
+        gotoNextPage={nextPage ? gotoNextPage : null}
+        gotoPrevPage={prevPage ? gotoPrevPage : null}
+      ></Pagination>
     </div>
   );
 }

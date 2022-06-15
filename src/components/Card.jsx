@@ -1,30 +1,33 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 
-function Card(props) {
+function Card({ name, url, index }) {
   const [pokemonImage, setPokemonImage] = useState([]);
   const [pokemonType, setPokemonType] = useState([]);
+
   useEffect(() => {
+    getPokemonImage();
+    getPokemonType();
+  }, []);
+
+  const getPokemonImage = () => {
     axios
-      .get(props.url)
+      .get(url)
       .then((response) =>
         setPokemonImage(response.data.sprites.other.dream_world)
       );
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get(props.url)
-      .then((response) => setPokemonType(response.data.types));
-  }, []);
+  };
+  const getPokemonType = () => {
+    axios.get(url).then((response) => setPokemonType(response.data.types));
+  };
 
   return (
-    <div className="Card">
+    <div className="Card" key={index}>
       <img className="Card-image" src={pokemonImage.front_default}></img>
-      <h2>{props.name}</h2>
+      <h2>{name}</h2>
       <div className="Divtype">
         {pokemonType.map((item) => {
-          return <h3>| {item.type.name} |</h3>;
+          return <h3 key={item.type.name}>| {item.type.name} |</h3>;
         })}
       </div>
     </div>
