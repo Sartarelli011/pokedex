@@ -2,14 +2,16 @@
   "name": "poke-app",
   "private": true,
   "version": "0.0.0",
-  "homepage": "pokedex/",
+  "homepage": "https://sartarelli011.github.io/pokedex/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "deploy": "gh-pages -d build",
     "preview": "vite preview"
   },
   "dependencies": {
     "axios": "^0.27.2",
+    "gh-pages": "^4.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
