@@ -6,19 +6,14 @@ function Card({ name, url, index }) {
   const [pokemonType, setPokemonType] = useState([]);
 
   useEffect(() => {
-    getPokemonImage();
-    getPokemonType();
+    getPokemonData();
   }, []);
 
-  const getPokemonImage = () => {
-    axios
-      .get(url)
-      .then((response) =>
-        setPokemonImage(response.data.sprites.other.dream_world)
-      );
-  };
-  const getPokemonType = () => {
-    axios.get(url).then((response) => setPokemonType(response.data.types));
+  const getPokemonData = () => {
+    axios.get(url).then((response) => {
+      setPokemonImage(response.data.sprites.other.dream_world);
+      setPokemonType(response.data.types);
+    });
   };
 
   return (
